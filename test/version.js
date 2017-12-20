@@ -33,7 +33,6 @@ describe('/version', () => {
 
             const res = await server.inject('/version');
 
-            // console.log('res ' + res);
             expect(res.result).to.equal('version 1.0.0 lesson2');
             server.stop();
         });

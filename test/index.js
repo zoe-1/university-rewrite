@@ -43,7 +43,8 @@ describe('/index', () => {
 
         University.init(internals.serverOptions).catch((err) => {
 
-            expect(err.message).to.be.a.string().and.contain(['\"badKey\" is not allowed']);
+            // Hoek.assert() throws error because a callback was not supplied.
+            expect(err.message).to.be.a.string().and.contain(['callback must be supplied.']);
             delete internals.serverOptions.badKey;
         });
     });
