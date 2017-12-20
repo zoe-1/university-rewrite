@@ -8,8 +8,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node lib/index.js",
-    "test": "test"
+    "start": "node lib/start.js",
+    "test": "lab -t 100 -L -v"
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,9 @@
   "homepage": "https://github.com/zoe-1/university-rewrite#readme",
   "dependencies": {
     "hapi": "17.x.x"
+  },
+  "devDependencies": {
+    "code": "5.x.x",
+    "lab": "15.x.x"
   }
 }
