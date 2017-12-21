@@ -30,9 +30,10 @@ describe('/version', () => {
         const server = await University.init(internals.serverOptions);
 
         expect(server).to.be.an.object();
-        const res = await server.inject('/version');
-        expect(res.result).to.equal('version 1.0.0 lesson2');
 
+        const res = await server.inject('/version');
+
+        expect(res.result).to.equal('version 1.0.0 lesson2');
         await server.stop();
     });
 });
