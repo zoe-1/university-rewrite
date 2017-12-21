@@ -23,18 +23,16 @@ internals.serverOptions = {
 
 describe('/version', () => {
 
-    it('/version success', (done) => {
+    it('/version success', { parallel: false }, async () => {
 
         const University = require('../lib');
 
-        return University.init(internals.serverOptions, async (server) => {
+        const server = await University.init(internals.serverOptions);
 
-            expect(server).to.be.an.object();
+        expect(server).to.be.an.object();
+        const res = await server.inject('/version');
+        expect(res.result).to.equal('version 1.0.0 lesson2');
 
-            const res = await server.inject('/version');
-
-            expect(res.result).to.equal('version 1.0.0 lesson2');
-            server.stop();
-        });
+        await server.stop();
     });
 });
