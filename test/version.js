@@ -14,26 +14,19 @@ const it = lab.test;
 
 const internals = {};
 
-// server options
-
-internals.serverOptions = {
-    port: process.env.PORT || 8000
-};
-
-
 describe('/version', () => {
 
     it('/version success', { parallel: false }, async () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.serverOptions);
+        const server = await University.init({});
 
         expect(server).to.be.an.object();
 
         const res = await server.inject('/version');
 
-        expect(res.result).to.equal('version 1.0.0 lesson2');
+        expect(res.result).to.equal('version 1.0.3 lesson3');
         await server.stop();
     });
 });

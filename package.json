@@ -1,6 +1,6 @@
 {
   "name": "university-v1.0.0",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "rewrite of the university",
   "main": "lib/index.js",
   "directories": {
