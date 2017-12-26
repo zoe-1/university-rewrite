@@ -1,6 +1,6 @@
 {
   "name": "university-v1.0.0",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "rewrite of the university",
   "main": "lib/index.js",
   "directories": {
@@ -27,7 +27,8 @@
   },
   "homepage": "https://github.com/zoe-1/university-rewrite#readme",
   "dependencies": {
-    "hapi": "17.x.x"
+    "hapi": "17.x.x",
+    "hapi-auth-bearer-token": "6.x.x"
   },
   "devDependencies": {
     "code": "5.x.x",

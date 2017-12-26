@@ -24,9 +24,11 @@ describe('/version', () => {
 
         expect(server).to.be.an.object();
 
-        const res = await server.inject('/version');
+        const request = { method: 'GET', url: '/version', headers: { authorization: 'Bearer 12345678' } };
 
-        expect(res.result).to.equal('version 1.0.3 lesson3');
+        const res = await server.inject(request);
+
+        expect(res.result).to.equal('version 1.0.4 lesson4');
         await server.stop();
     });
 });
