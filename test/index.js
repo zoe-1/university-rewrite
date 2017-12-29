@@ -3,6 +3,7 @@
 
 const Lab = require('lab');
 const Code = require('code');
+const Fs = require('fs');
 
 // Test shortcuts
 
@@ -18,7 +19,11 @@ const internals = {};
 // server options
 
 internals.serverOptions = {
-    port: process.env.PORT || 8000
+    port: null,
+    tls: {
+        key: Fs.readFileSync('lib/certs/key.key'),
+        cert: Fs.readFileSync('lib/certs/cert.crt')
+    }
 };
 
 describe('/index', () => {
