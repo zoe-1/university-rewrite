@@ -18,11 +18,18 @@ const internals = {};
 
 // server options
 
-internals.serverOptions = {
-    port: null,
-    tls: {
-        key: Fs.readFileSync('lib/certs/key.key'),
-        cert: Fs.readFileSync('lib/certs/cert.crt')
+internals.options = {
+    server: {
+        port: process.env.PORT || 8000,
+        tls: {
+            key: Fs.readFileSync('lib/certs/key.key'),
+            cert: Fs.readFileSync('lib/certs/cert.crt')
+        }
+    },
+    plugins: {
+        authToken: {
+            expiresIn: 6000
+        }
     }
 };
 
@@ -32,7 +39,7 @@ describe('/index', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.serverOptions);
+        const server = await University.init(internals.options.server, internals.options.plugins);
         expect(server).to.be.an.object();
         await server.stop();
     });
@@ -42,11 +49,11 @@ describe('/index', () => {
 
         const University = require('../lib');
 
-        internals.serverOptions.badKey = 'badthings';
+        internals.options.server.badKey = 'badthings';
 
         try {
 
-            await  University.init(internals.serverOptions);
+            await University.init(internals.options.server, internals.options.plugins);
         }
         catch (err) {
 

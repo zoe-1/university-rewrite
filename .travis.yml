@@ -5,3 +5,8 @@ node_js:
   - "9" 
 
 sudo: false
+
+before_script:
+    - redis-server &
+    - redis-server --unixsocket /tmp/redis.sock &
+    - sleep 2
