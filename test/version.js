@@ -96,7 +96,7 @@ describe('/version', () => {
         await server.stop();
     });
 
-    it('successfully access private data', async () => {
+    it('./private success, valid authtoken', async () => {
 
         const University = require('../lib');
 
