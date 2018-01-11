@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/zoe-1/university-rewrite#readme",
   "dependencies": {
+    "boom": "^7.1.1",
     "hapi": "17.x.x",
     "hapi-auth-bearer-token": "6.x.x"
   },
