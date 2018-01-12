@@ -4,6 +4,7 @@ const Lab = require('lab');
 const Code = require('code');
 const Fs = require('fs');
 const Util = require('util');
+const Confidence = require('confidence');
 
 // Test shortcuts
 
@@ -15,19 +16,28 @@ const it = lab.test;
 
 const internals = {};
 
-internals.options = {
-    server: {
-        port: process.env.PORT || 8000,
-        tls: {
-            key: Fs.readFileSync('lib/certs/key.key'),
-            cert: Fs.readFileSync('lib/certs/cert.crt')
-        }
-    },
-    plugins: {
-        authToken: {
-            expiresIn: 50  // must be a low count or tokens do not expire before next test.
-        }
-    }
+
+// Confidence Configs 
+
+const { Config } = require('../lib/config');
+const Store = new Confidence.Store(Config);
+const Guid = Confidence.id.generate();
+const Criteria = Confidence.id.criteria(Guid);
+
+if (Criteria === null) {
+    console.err('Bad id');
+    process.exit(1);
+}
+
+Criteria.env = 'test';
+
+internals.config = Store.get('/', Criteria);
+
+internals.config.server.tls = {
+    key: Fs.readFileSync('./lib/certs/key.key'),
+    cert: Fs.readFileSync('./lib/certs/cert.crt'),
+    requestCert: false,
+    ca: []
 };
 
 describe('/version', () => {
@@ -36,7 +46,7 @@ describe('/version', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.options.server, internals.options.plugins);
+        const server = await University.init(internals.config.server, internals.config.plugins);
 
         expect(server).to.be.an.object();
 
@@ -61,7 +71,7 @@ describe('/version', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.options.server, internals.options.plugins);
+        const server = await University.init(internals.config.server, internals.config.plugins);
 
         expect(server).to.be.an.object();
 
@@ -87,12 +97,12 @@ describe('/version', () => {
 
         const setTimeoutPromise = Util.promisify(setTimeout);
 
-        return setTimeoutPromise(100, 'foobar').then(async (value) => {
+        return setTimeoutPromise(200, 'foobar').then(async (value) => {
 
             // setTimeoutPromise allows for tokens in rediscache to 
             // expire before the next test begins.
 
-            const server = await University.init(internals.options.server, internals.options.plugins);
+            const server = await University.init(internals.config.server, internals.config.plugins);
 
             expect(server).to.be.an.object();
 
@@ -118,7 +128,7 @@ describe('/version', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.options.server, internals.options.plugins);
+        const server = await University.init(internals.config.server, internals.config.plugins);
 
         expect(server).to.be.an.object();
 
@@ -135,7 +145,7 @@ describe('/version', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.options.server, internals.options.plugins);
+        const server = await University.init(internals.config.server, internals.config.plugins);
 
         expect(server).to.be.an.object();
 
@@ -159,7 +169,7 @@ describe('/version', () => {
 
         return setTimeoutPromise(150).then(async () => {
 
-            const server = await University.init(internals.options.server, internals.options.plugins);
+            const server = await University.init(internals.config.server, internals.config.plugins);
 
             expect(server).to.be.an.object();
 
@@ -189,7 +199,7 @@ describe('/version', () => {
 
         return setTimeoutPromise(150).then(async () => {
 
-            const server = await University.init(internals.options.server, internals.options.plugins);
+            const server = await University.init(internals.config.server, internals.config.plugins);
 
             expect(server).to.be.an.object();
 
@@ -214,5 +224,5 @@ describe('/version', () => {
     });
 });
 
-// curl -H "Content-Type: application/json" -X POST -d '{"username":"foofoo","password":"12345678"}' https://localhost:8000/authenticate
+// curl -k -H "Content-Type: application/json" -X POST -d '{"username":"foofoo","password":"12345678"}' https://localhost:8000/authenticate
 // curl -k -X GET -H "Authorization: Bearer 12345678" https://localhost:8000/version
