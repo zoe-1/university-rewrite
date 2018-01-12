@@ -29,6 +29,7 @@
   "dependencies": {
     "boom": "7.x.x",
     "catbox-redis": "4.x.x",
+    "confidence": "^3.0.2",
     "cryptiles": "^4.1.1",
     "hapi": "17.x.x",
     "hapi-auth-bearer-token": "6.x.x",
