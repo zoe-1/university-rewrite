@@ -17,7 +17,7 @@ const it = lab.test;
 const internals = {};
 
 
-// Confidence Configs 
+// Confidence Configs
 
 const { Config } = require('../lib/config');
 const Store = new Confidence.Store(Config);
@@ -99,7 +99,7 @@ describe('/version', () => {
 
         return setTimeoutPromise(200, 'foobar').then(async (value) => {
 
-            // setTimeoutPromise allows for tokens in rediscache to 
+            // setTimeoutPromise allows for tokens in rediscache to
             // expire before the next test begins.
 
             const server = await University.init(internals.config.server, internals.config.plugins);
@@ -162,9 +162,6 @@ describe('/version', () => {
 
         const University = require('../lib');
 
-        // curl -H "Authorization: Bearer 12345678" -X GET https://localhost:8000/private
-        // curl -k -X GET -H "Authorization: Bearer 12345678" https://localhost:8000/version
-
         const setTimeoutPromise = Util.promisify(setTimeout);
 
         return setTimeoutPromise(150).then(async () => {
@@ -186,6 +183,42 @@ describe('/version', () => {
             const res = await server.inject(request);
 
             expect(res.result).to.equal('privateData');
+            await server.stop({ timeout: 4 });
+        });
+    });
+
+    it('fails to access ./private. good server.log reports.', () => {
+
+        const University = require('../lib');
+
+
+        const setTimeoutPromise = Util.promisify(setTimeout);
+
+        return setTimeoutPromise(150).then(async () => {
+
+            const server = await University.init(internals.config.server, internals.config.plugins);
+
+            expect(server).to.be.an.object();
+
+            server.events.on('log', (event, tags) => {
+
+                if (tags.error) {
+                    expect(tags.authentication).to.equal(true);
+                    expect(tags.abuse).to.equal(true);
+                    expect(event.data).to.equal('Authentication data missing credentials information');
+                }
+            });
+
+            // http-auth-bearer-token creates a console error repsponse.
+            // It prints out to the console. Turn these console reports off by setting `debug: false` (./lib/config.js)
+
+            const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + 'badToken' } };
+
+            const res = await server.inject(request);
+
+            expect(res.result.statusCode).to.equal(500);
+            expect(res.result.error).to.equal('Internal Server Error');
+
             await server.stop({ timeout: 4 });
         });
     });
@@ -224,5 +257,9 @@ describe('/version', () => {
     });
 });
 
+// curl -H "Authorization: Bearer 12345678" -X GET https://localhost:8000/private
+// curl -k -X GET -H "Authorization: Bearer 12345678" https://localhost:8000/version
+// curl -H "Authorization: Bearer 12345678" -X GET https://localhost:8000/private
+// curl -k -X GET -H "Authorization: Bearer 12345678" https://localhost:8000/version
 // curl -k -H "Content-Type: application/json" -X POST -d '{"username":"foofoo","password":"12345678"}' https://localhost:8000/authenticate
 // curl -k -X GET -H "Authorization: Bearer 12345678" https://localhost:8000/version

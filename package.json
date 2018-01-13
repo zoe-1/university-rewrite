@@ -29,8 +29,11 @@
   "dependencies": {
     "boom": "7.x.x",
     "catbox-redis": "4.x.x",
-    "confidence": "^3.0.2",
-    "cryptiles": "^4.1.1",
+    "confidence": "3.x.x",
+    "cryptiles": "4.x.x",
+    "good": "^8.0.0-rc1",
+    "good-file": "^6.0.1",
+    "good-squeeze": "5.x.x",
     "hapi": "17.x.x",
     "hapi-auth-bearer-token": "6.x.x",
     "hoek": "^5.0.2"
