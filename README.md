@@ -1,9 +1,24 @@
 # university rewrite
 
+# Dependencies
+  * [redis server](http://redis.io)<br/>
+    used by the cache.
+
+# Issues
+  * (lesson7 on) If you start the server with `npm start` and authenticate a user recod.
+    The authtoken stored in the cache will expire within one minute. So, if you stop the 
+    server before one minute expires and immediately run tests before one minute is up,
+    tests will fail because the user's authtoken already exists.
+  * good <br/> 
+    Use `npm i good@8.0.0-rc1` to install. This is the version compatible with hapi v17<br/>
+    [See release notes](https://github.com/hapijs/good/issues/575)<br/>
+
 
 ### lesson1
 
-basic hapi server
+basic hapi server<br/>
+one point on the server: `/version`<br/>
+returns version value from package.json file.
 
 
 ### lesson2
@@ -92,3 +107,5 @@ good hapi process monitoring & extending hapi request lifecycle
   logged to the logfile.
 * Add `{ debug: false }` config to Confidence file for tests.
   Otherwise, the tests print out hapi-auth-bearer-token error reports.
+
+### lesson10

@@ -87,7 +87,7 @@ describe('/version', () => {
 
         const res = await server.inject(request);
 
-        expect(res.result).to.equal('version 1.0.7 lesson7');
+        expect(res.result).to.equal('version 1.0.9 lesson9');
         await server.stop({ timeout: 4 });
     });
 
