@@ -3,8 +3,6 @@
 
 const Lab = require('lab');
 const Code = require('code');
-const Confidence = require('confidence');
-const Fs = require('fs');
 
 // Test shortcuts
 
@@ -17,55 +15,39 @@ const it = lab.test;
 
 const internals = {};
 
-// Confidence Configs 
-
-const { Config } = require('../lib/config');
-const Store = new Confidence.Store(Config);
-const Guid = Confidence.id.generate();
-const Criteria = Confidence.id.criteria(Guid);
-
-if (Criteria === null) {
-    console.err('Bad id');
-    process.exit(1);
-}
-
-Criteria.env = 'test';
-
-internals.config = Store.get('/', Criteria);
-
-internals.config.server.tls = {
-    key: Fs.readFileSync('./lib/certs/key.key'),
-    cert: Fs.readFileSync('./lib/certs/cert.crt'),
-    requestCert: false,
-    ca: []
-};
-
-
 describe('/index', () => {
 
     it('start up server', async () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.config.server, internals.config.plugins);
+        const server = await University.init('test');
+
         expect(server).to.be.an.object();
         await server.stop();
     });
 
-    it('failed start up', async (done) => {
+    it('fails to generate configs (confidence bad id)', async (done) => {
 
         const University = require('../lib');
 
-        internals.config.server.badKey = 'badthings';
+        const Confidence = require('confidence');
+
+        const original = Confidence.id.criteria;
+
+        Confidence.id.criteria = () => {
+
+            Confidence.id.criteria = original;
+            return null;
+        };
 
         try {
 
-            await University.init(internals.config.server, internals.config.plugins);
+            await University.init('test');
         }
         catch (err) {
 
-            delete internals.config.server.badKey;
-            expect(err.message).to.be.a.string().and.contain(['Invalid server options']);
+            expect(err.message).to.equal('Confidence Bad id');
         }
     });
 });
