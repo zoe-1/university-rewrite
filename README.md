@@ -1,10 +1,10 @@
 # university rewrite
 
-# Dependencies
+## Dependencies
   * [redis server](http://redis.io)<br/>
     used by the cache.
 
-# Issues
+## Issues
   * (lesson7 on) If you start the server with `npm start` and authenticate a user recod.
     The authtoken stored in the cache will expire within one minute. So, if you stop the 
     server before one minute expires and immediately run tests before one minute is up,
@@ -109,3 +109,37 @@ good hapi process monitoring & extending hapi request lifecycle
   Otherwise, the tests print out hapi-auth-bearer-token error reports.
 
 ### lesson10
+    
+do refactor
+
+- **routeMethod cleanup**<br/>
+  * make routeMethod directory. Move route methods out of `version` plugin.
+  * place routeMethods in routeMethod directory files.<br/>
+    Ex) methods used in the ./authenticate route will be stored in
+    `./lib/routeMethod/authenticate.js` file.
+- **plugins**<br/>
+  * make  a `user` plugin.
+  * move user logic (./authenticate) from `version` plugin and place
+    in `user`.
+- **tests**<br/>
+  * move user authenticate tests into `test/user.js`
+
+- directory tree after refactor<br/>
+  ```
+  lib/
+  ├── authtoken.js
+  ├── cache.js
+  ├── certs
+  │   ├── cert.crt
+  │   └── key.key
+  ├── config.js
+  ├── database.js
+  ├── index.js
+  ├── routeMethod
+  │   ├── authenticate.js
+  │   ├── private.js
+  │   └── version.js
+  ├── start.js
+  ├── user.js
+  └── version.js
+  ```
