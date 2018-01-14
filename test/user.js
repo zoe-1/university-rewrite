@@ -2,9 +2,7 @@
 
 const Lab = require('lab');
 const Code = require('code');
-const Fs = require('fs');
 const Util = require('util');
-const Confidence = require('confidence');
 
 // Test shortcuts
 
@@ -16,37 +14,13 @@ const it = lab.test;
 
 const internals = {};
 
-
-// Confidence Configs
-
-const { Config } = require('../lib/config');
-const Store = new Confidence.Store(Config);
-const Guid = Confidence.id.generate();
-const Criteria = Confidence.id.criteria(Guid);
-
-if (Criteria === null) {
-    console.err('Bad id');
-    process.exit(1);
-}
-
-Criteria.env = 'test';
-
-internals.config = Store.get('/', Criteria);
-
-internals.config.server.tls = {
-    key: Fs.readFileSync('./lib/certs/key.key'),
-    cert: Fs.readFileSync('./lib/certs/cert.crt'),
-    requestCert: false,
-    ca: []
-};
-
 describe('/user', () => {
 
     it('succesfully authenticates', { parallel: false }, async () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.config.server, internals.config.plugins);
+        const server = await University.init('test');
 
         expect(server).to.be.an.object();
 
@@ -78,7 +52,7 @@ describe('/user', () => {
             // setTimeoutPromise allows for tokens in rediscache to
             // expire before the next test begins.
 
-            const server = await University.init(internals.config.server, internals.config.plugins);
+            const server = await University.init('test');
 
             expect(server).to.be.an.object();
 
@@ -104,7 +78,7 @@ describe('/user', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.config.server, internals.config.plugins);
+        const server = await University.init('test');
 
         expect(server).to.be.an.object();
 
@@ -121,7 +95,7 @@ describe('/user', () => {
 
         const University = require('../lib');
 
-        const server = await University.init(internals.config.server, internals.config.plugins);
+        const server = await University.init('test');
 
         expect(server).to.be.an.object();
 
