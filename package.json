@@ -34,6 +34,7 @@
     "good": "^8.0.0-rc1",
     "good-file": "^6.0.1",
     "good-squeeze": "5.x.x",
+    "graphi": "^5.3.0",
     "hapi": "17.x.x",
     "hapi-auth-bearer-token": "6.x.x",
     "hoek": "^5.0.2"
