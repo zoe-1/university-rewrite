@@ -21,13 +21,13 @@ suite('graphi development', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: { query:'{ hapi (id:\"1003\") { name description } }' } };
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: { query:'{ getRepository (id:\"1003\") { name description } }' } };
 
         const res = await server.inject(request);
 
         expect(JSON.parse(res.payload)).to.equal({
             'data':
-            { 'hapi':
+            { 'getRepository':
                 {
                     'name':  'catbox-redis',
                     'description':  'Implement catbox-policy with redisdb.'
@@ -52,23 +52,67 @@ suite('graphi development', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ hapi (id:\"1003\") { name description related { name } } }';
+        const query = '{ getRepository (id:\"1005\") { name description related { name } } }';
+
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
         const res = await server.inject(request);
 
         expect(JSON.parse(res.payload)).to.equal({
             'data':
-            { 'hapi':
+            { 'getRepository':
                 {
-                    'name':  'catbox-redis',
-                    'description':  'Implement catbox-policy with redisdb.',
+                    'name':  'reactjs',
+                    'description':  'user interface builder',
                     'related': [
                         {
-                            'name': 'hapi'
+                            'name': 'browserify'
                         },
                         {
-                            'name': 'catbox-policy'
+                            'name': 'webpack'
+                        }
+                    ]
+                }
+            }
+        });
+
+        await server.stop({ timeout: 4 });
+    });
+
+    test.only('search returns xHapi type name and topics', async () => {
+
+        const University = require('../lib');
+
+        const server = await University.init('test');
+
+        expect(server).to.be.an.object();
+
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
+
+        const authRes = await server.inject(authenticateRequest);
+
+        expect(authRes.result.token.length).to.equal(36);
+
+        const query = '{ getRepository (id:\"1005\") { name } }';
+
+        // const query = '{ getRepository (id:\"1005\") { name ... on xHapi { topics { name } } } }';
+
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
+
+        const res = await server.inject(request);
+
+        expect(JSON.parse(res.payload)).to.equal({
+            'data':
+            { 'getRepository':
+                {
+                    'name':  'reactjs',
+                    'description':  'user interface builder',
+                    'related': [
+                        {
+                            'name': 'browserify'
+                        },
+                        {
+                            'name': 'webpack'
                         }
                     ]
                 }
