@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node lib/start.js",
-    "test": "lab -t 100 -L -v"
+    "test": "lab -t 100 -L -v",
+    "graphi:build": ". ./resources/graphiBuild.sh"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,15 @@
     "hoek": "^5.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-syntax-async-generators": "^6.13.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "code": "5.x.x",
     "lab": "15.x.x"
   }
