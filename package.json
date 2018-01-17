@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node lib/start.js",
     "test": "lab -t 100 -L -v",
-    "graphi:build": ". ./resources/graphiBuild.sh"
+    "build:graphi": ". ./resources/graphiBuild.sh"
   },
   "repository": {
     "type": "git",
