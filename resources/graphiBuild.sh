@@ -1,10 +1,10 @@
 
+# @note below commands babal compiles specific files
+# babel  lib/graphi/src/schema.js --out-file ./lib/graphi/dist/schema.js --out-dir lib/graphi/src
+# babel lib/graphi/src/data.js --out-file ./lib/graphi/dist/data.js --out-dir lib/graphi/src
 
-rm -f lib/graphi/dist/schema.js
-rm -f lib/graphi/dist/data.js
+# compile all files in directory to /dist directory
 
-babel lib/graphi/src/schema.js --out-file ./lib/graphi/dist/schema.js
+babel lib/graphi/src  --out-dir lib/graphi/dist
 
-babel lib/graphi/src/data.js --out-file ./lib/graphi/dist/data.js
-
-echo "Built graphi schema"
+echo "Cleaned and rebuilt graphi schema"

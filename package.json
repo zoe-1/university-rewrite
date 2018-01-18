@@ -10,7 +10,13 @@
   "scripts": {
     "start": "node lib/start.js",
     "test": "lab -t 100 -L -v",
-    "build:graphi": ". ./resources/graphiBuild.sh"
+    "build": "npm run check && npm run build:clean && npm run build:dist",
+    "build:clean": "rm -rf ./lib/graphi/dist",
+    "build:dist": "babel lib/graphi/src  --out-dir lib/graphi/dist",
+    "check": "flow",
+    "flow:init": ". ./resources/flowInit.sh",
+    "flow:stop": "flow stop",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -50,7 +56,9 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
     "code": "5.x.x",
+    "flow-bin": "^0.63.1",
     "lab": "15.x.x"
   }
 }

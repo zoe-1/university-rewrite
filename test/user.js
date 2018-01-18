@@ -38,7 +38,7 @@ describe('/user', () => {
         expect(res2.result.message).to.equal('you already registered a token!');
         expect(res2.result.token.length).to.equal(36);
         expect(res2.result.token).to.equal(res.result.token);
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 0 });
     });
 
     it('succesfully authenticates, previously registered token returned', { parallel: false }, () => {
@@ -70,7 +70,7 @@ describe('/user', () => {
 
             expect(res.result.message).to.equal('you already registered a token!');
             expect(res.result.token.length).to.equal(36);
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 
@@ -88,7 +88,7 @@ describe('/user', () => {
 
         expect(res.result.statusCode).to.equal(401);
         expect(res.result.message).to.equal('invalid credentials');
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 0 });
     });
 
     it('fails to authenticate, bad username', { parallel: false }, async () => {
@@ -105,6 +105,6 @@ describe('/user', () => {
 
         expect(res.result.statusCode).to.equal(401);
         expect(res.result.message).to.equal('invalid credentials');
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 0 });
     });
 });

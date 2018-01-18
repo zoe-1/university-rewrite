@@ -24,7 +24,7 @@ describe('/index', () => {
         const server = await University.init('test');
 
         expect(server).to.be.an.object();
-        await server.stop();
+        await server.stop({ timeout: 1 });
     });
 
     it('fails to generate configs (confidence bad id)', async (done) => {
@@ -43,10 +43,9 @@ describe('/index', () => {
 
         try {
 
-            await University.init('test');
+            internals.serverConfidence = await University.init('test');
         }
         catch (err) {
-
             expect(err.message).to.equal('Confidence Bad id');
         }
     });

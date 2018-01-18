@@ -35,7 +35,7 @@ describe('/version', () => {
         const res = await server.inject(request);
 
         expect(res.result).to.equal('version 1.0.10');
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 0 });
     });
 
     it('./private success, valid authtoken', () => {
@@ -63,7 +63,7 @@ describe('/version', () => {
             const res = await server.inject(request);
 
             expect(res.result).to.equal('privateData');
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 
@@ -99,7 +99,7 @@ describe('/version', () => {
             expect(res.result.statusCode).to.equal(500);
             expect(res.result.error).to.equal('Internal Server Error');
 
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 
@@ -132,7 +132,7 @@ describe('/version', () => {
             expect(res.result.message).to.equal('Insufficient scope');
             expect(res.result.error).to.equal('Forbidden');
 
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 });

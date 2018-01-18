@@ -3,11 +3,12 @@
 const { expect } = require('code');
 const Lab = require('lab');
 const { suite, test } = exports.lab = Lab.script();
+const Util = require('util');
 
 
 suite('/graphi', () => {
 
-    test('search returns name and description values', async () => {
+    test('search returns name and description values', { parallel: false }, async () => {
 
         const University = require('../lib');
 
@@ -44,10 +45,10 @@ suite('/graphi', () => {
             }
         });
 
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 1 });
     });
 
-    test('search returns name, description and related projects', async () => {
+    test('search returns name, description and related projects', { parallel: false }, async () => {
 
         const University = require('../lib');
 
@@ -85,10 +86,10 @@ suite('/graphi', () => {
             }
         });
 
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 1 });
     });
 
-    test('search returns xHapi type name and topics (inline fragment)', async () => {
+    test('search returns xHapi type name and topics (inline fragment)', { parallel: false }, async () => {
 
         const University = require('../lib');
 
@@ -142,7 +143,7 @@ suite('/graphi', () => {
         await server.stop({ timeout: 4 });
     });
 
-    test('search returns Hapi type name and related (inline fragment)', async () => {
+    test('search returns Hapi type name and related (inline fragment)', { parallel: false }, async () => {
 
         const University = require('../lib');
 
@@ -194,43 +195,48 @@ suite('/graphi', () => {
             }
         });
 
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 1 });
     });
 
-    test('search fails bad userid', { parallel: false },async () => {
+    test('search fails bad userid', { parallel: false }, () => {
 
         const University = require('../lib');
 
-        const server = await University.init('test');
+        const setTimeoutPromise = Util.promisify(setTimeout);
 
-        expect(server).to.be.an.object();
+        return setTimeoutPromise(55).then(async () => { // cache issues this fixed the test
 
-        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
+            const server = await University.init('test');
 
-        const authRes = await server.inject(authenticateRequest);
+            expect(server).to.be.an.object();
 
-        expect(authRes.result.token.length).to.equal(36);
+            const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
 
-        const request = {
-            method: 'POST',
-            url: '/graphql',
-            headers: {
-                authorization: 'Bearer ' +  authRes.result.token
-            },
-            payload: {
-                query:'{ getRepository (id:\"xxxx\") { name description } }'
-            }
-        };
+            const authRes = await server.inject(authenticateRequest);
 
-        const res = await server.inject(request);
+            expect(authRes.result.token.length).to.equal(36);
 
-        expect(JSON.parse(res.payload)).to.equal({
-            'data':
-            { 'getRepository': null
-            }
+            const request = {
+                method: 'POST',
+                url: '/graphql',
+                headers: {
+                    authorization: 'Bearer ' +  authRes.result.token
+                },
+                payload: {
+                    query:'{ getRepository (id:\"xxxx\") { name description } }'
+                }
+            };
+
+            const res = await server.inject(request);
+
+            expect(JSON.parse(res.payload)).to.equal({
+                'data':
+                { 'getRepository': null
+                }
+            });
+
+            await server.stop({ timeout: 2 });
         });
-
-        await server.stop({ timeout: 4 });
     });
 
     test('search projects > related_project > and related projects (friends of friends)', async () => {
@@ -354,6 +360,6 @@ suite('/graphi', () => {
             }
         });
 
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 1 });
     });
 });
