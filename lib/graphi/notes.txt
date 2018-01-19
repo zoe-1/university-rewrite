@@ -1,20 +1,20 @@
 
 Graphql Schema
------------------------------------
+----------------------------------------
 * GraphQLInterfaceType()
-* GraphQLObjectType() 
+* GraphQLObjectType()
     - query and interface subtypes.
 * GraphQLSchema(
     query: queryType,
     types: [objectType, objectType],
-  ); 
-    
-Graphql database read/writes (resolvers) 
------------------------------------
+  );
+
+Graphql database read/writes (resolvers)
+----------------------------------------
 * next generation JavaScript functions.
 * written according to flow static type style.
 * resolver functions are built here which are used
-  by schema resolvers. 
+  by schema resolvers.
 * server object is available in read/write functions.
 
 
@@ -26,3 +26,9 @@ Issue: to pass hapi server object to
        the schema builder function. Which gives server object
        to resolver functions. So, server.app.db is available.
 
+Two ways to build resolver functions
+-----------------------------------------
+* First way is already built. server options are passed
+  to plugins.
+* Second way is build an object set the object in the
+  graphi resolver options. Do this for the mutation requests.
