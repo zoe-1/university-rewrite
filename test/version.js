@@ -103,37 +103,31 @@ describe('/version', () => {
         });
     });
 
-    it('denies non-admin user access to ./private route', () => {
+    it('denies non-admin user access to ./private route', async () => {
 
         const University = require('../lib');
 
+        const server = await University.init('test');
 
-        const setTimeoutPromise = Util.promisify(setTimeout);
+        expect(server).to.be.an.object();
 
-        return setTimeoutPromise(150).then(async () => {
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
 
-            const server = await University.init('test');
+        const authRes = await server.inject(authenticateRequest);
 
-            expect(server).to.be.an.object();
+        expect(authRes.result.result).to.equal('welcome');
+        expect(authRes.result.message).to.equal('successful authentication');
+        expect(authRes.result.token.length).to.equal(36);
 
-            const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
+        const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + authRes.result.token } };
 
-            const authRes = await server.inject(authenticateRequest);
+        const res = await server.inject(request);
 
-            expect(authRes.result.result).to.equal('welcome');
-            expect(authRes.result.message).to.equal('successful authentication');
-            expect(authRes.result.token.length).to.equal(36);
+        expect(res.result.statusCode).to.equal(403);
+        expect(res.result.message).to.equal('Insufficient scope');
+        expect(res.result.error).to.equal('Forbidden');
 
-            const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + authRes.result.token } };
-
-            const res = await server.inject(request);
-
-            expect(res.result.statusCode).to.equal(403);
-            expect(res.result.message).to.equal('Insufficient scope');
-            expect(res.result.error).to.equal('Forbidden');
-
-            await server.stop({ timeout: 0 });
-        });
+        await server.stop({ timeout: 0 });
     });
 });
 

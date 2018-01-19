@@ -8,7 +8,7 @@ const Util = require('util');
 
 suite('/graphi', () => {
 
-    test('search returns name and description values', { parallel: false }, async () => {
+    test('search name and description values', { parallel: false },  async () => {
 
         const University = require('../lib');
 
@@ -22,16 +22,9 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const request = {
-            method: 'POST',
-            url: '/graphql',
-            headers: {
-                authorization: 'Bearer ' +  authRes.result.token
-            },
-            payload: {
-                query:'{ getRepository (id:\"1003\") { name description } }'
-            }
-        };
+        const query = '{ getRepository (id:\"1003\") { name description } }';
+
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
         const res = await server.inject(request);
 
@@ -45,7 +38,7 @@ suite('/graphi', () => {
             }
         });
 
-        await server.stop({ timeout: 1 });
+        await server.stop();
     });
 
     test('search returns name, description and related projects', { parallel: false }, async () => {

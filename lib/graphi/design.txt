@@ -1,0 +1,29 @@
+schema
+
+# const get = async functions
+    
+    ## import resolvers 
+
+    ## BuildInterfaca
+    GraphQLInterfaceType();
+
+    ## Build Interface SubTypes 
+    GraphQLObjectType();
+    hapi 
+    xHapi
+    topic 
+
+    ## Build query type
+    GraphQLObjectType({});
+
+    ## Build schema 
+    export const schema = new GraphQLSchema({
+        query: queryType,
+        types: [hapiType, xHapiType],
+    });
+
+resolvers
+    ## resolver.getRelated(xHapiRecord) 
+    ## resolver.getTopics(xHapiRecord) 
+    ## resolver.getRepository(id) 
+
