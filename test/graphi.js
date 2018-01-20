@@ -22,7 +22,7 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ getRepository (id:\"1003\") { name description } }';
+        const query = `{ getRepository (id:"1003") { name description } }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -55,7 +55,7 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ getRepository (id:\"1005\") { name description related { name } } }';
+        const query = '{ getRepository (id:"1005") { name description related { name } } }';
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -96,20 +96,20 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ getRepository (id:\"1005\") { name ' +  // returns a xHapiType
-                      '   description                       ' +
-                      '     ... on xHapi {                  ' +
-                      '         topics {                    ' +
-                      '           name                      ' +
-                      '         }                           ' +
-                      '      }                              ' +
-                      '     ... on Hapi {                   ' +
-                      '          related {                  ' +
-                      '           name                      ' +
-                      '         }                           ' +
-                      '      }                              ' +
-                      '  }                                  ' +
-                      '}';
+        const query = `{ getRepository (id:"1005") { name
+                        description
+                           ... on xHapi {
+                               topics {
+                                 name
+                               }
+                            }
+                           ... on Hapi {
+                                related {
+                                 name
+                               }
+                            }
+                        }
+                      }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -150,21 +150,21 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ getRepository (id:\"1002\") {      ' +  // returns a HapiType
-                      '   name                              ' +
-                      '   description                       ' +
-                      '     ... on xHapi {                  ' +
-                      '         topics {                    ' +
-                      '           name                      ' +
-                      '         }                           ' +
-                      '      }                              ' +
-                      '     ... on Hapi {                   ' +
-                      '          related {                  ' +
-                      '           name                      ' +
-                      '         }                           ' +
-                      '      }                              ' +
-                      '  }                                  ' +
-                      '}';
+        const query = `{ getRepository (id:\"1002\") {
+                         name
+                         description
+                           ... on xHapi {
+                               topics {
+                                 name
+                               }
+                            }
+                           ... on Hapi {
+                                related {
+                                 name
+                               }
+                            }
+                        }
+                      }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -216,7 +216,7 @@ suite('/graphi', () => {
                     authorization: 'Bearer ' +  authRes.result.token
                 },
                 payload: {
-                    query:'{ getRepository (id:\"xxxx\") { name description } }'
+                    query:'{ getRepository (id:"xxxx") { name description } }'
                 }
             };
 
@@ -247,19 +247,17 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        // const query = '{ getRepository (id:\"1005\") { name description related { name } } }';
-
-        const query = '{ getRepository (id:\"1002\") {      ' +  // returns a HapiType
-                      '   name                              ' +
-                      '   description                       ' +
-                      '     related {                       ' +
-                      '       name                          ' +
-                      '       related {                     ' +
-                      '         name                        ' +
-                      '       }                             ' +
-                      '     }                               ' +
-                      '  }                                  ' +
-                      '}';
+        const query = `{ getRepository (id:"1002") {
+                         name
+                         description
+                           related {
+                             name
+                             related {
+                               name
+                             }
+                           }
+                        }
+                      }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -309,19 +307,19 @@ suite('/graphi', () => {
 
         expect(authRes.result.token.length).to.equal(36);
 
-        const query = '{ getRepository (id:\"1005\") {      ' +  // returns a xHapiType
-                      '   name                              ' +
-                      '   description                       ' +
-                      '     ... on xHapi {                  ' +
-                      '         related {                   ' +
-                      '           name                      ' +
-                      '           ... on xHapi {            ' +
-                      '              topics { name }        ' +
-                      '           }                         ' +
-                      '         }                           ' +
-                      '     }                               ' +
-                      '   }                                 ' +
-                      '}';
+        const query = `{ getRepository (id:"1005") {
+                         name
+                         description
+                           ... on xHapi {
+                               related {
+                                 name
+                                 ... on xHapi {
+                                    topics { name }
+                                 }
+                               }
+                           }
+                         }
+                      }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
@@ -350,6 +348,115 @@ suite('/graphi', () => {
                         }
                     ]
                 }
+            }
+        });
+
+        await server.stop({ timeout: 1 });
+    });
+
+    test('do update success (series)', async () => {
+
+        const University = require('../lib');
+
+        const server = await University.init('test');
+
+        expect(server).to.be.an.object();
+
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
+
+        const authRes = await server.inject(authenticateRequest);
+
+        expect(authRes.result.token.length).to.equal(36);
+
+        const query = `mutation M {
+            first: update (id:"1000", name:"rica") {
+                name
+            },
+            second: update (id:"1000", name:"project") {
+                name
+            }
+        }`;
+
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: { query } };
+
+        const res = await server.inject(request);
+
+        expect(JSON.parse(res.payload)).to.equal({
+            'data': {
+                'first': {
+                    'name': 'rica'
+                },
+                'second': {
+                    'name': 'project'
+                }
+            }
+        });
+
+        await server.stop({ timeout: 1 });
+    });
+
+    test('do update sucess', async () => {
+
+        const University = require('../lib');
+
+        const server = await University.init('test');
+
+        expect(server).to.be.an.object();
+
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
+
+        const authRes = await server.inject(authenticateRequest);
+
+        expect(authRes.result.token.length).to.equal(36);
+
+        const query = `mutation M {
+            update (id:"1000", name:"test") {
+                name
+            }
+        }`;
+
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: { query } };
+
+        const res = await server.inject(request);
+
+        expect(JSON.parse(res.payload)).to.equal({
+            'data': {
+                'update': {
+                    'name': 'test'
+                }
+            }
+        });
+
+        await server.stop({ timeout: 1 });
+    });
+
+    test('fails to update record. does not exist', async () => {
+
+        const University = require('../lib');
+
+        const server = await University.init('test');
+
+        expect(server).to.be.an.object();
+
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
+
+        const authRes = await server.inject(authenticateRequest);
+
+        expect(authRes.result.token.length).to.equal(36);
+
+        const query = `mutation M {
+            update (id:"3000", name:"doport") {
+                name
+            }
+        }`;
+
+        const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: { query } };
+
+        const res = await server.inject(request);
+
+        expect(JSON.parse(res.payload)).to.equal({
+            'data': {
+                'update': null
             }
         });
 
