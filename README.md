@@ -12,6 +12,9 @@
   * good <br/> 
     Use `npm i good@8.0.0-rc1` to install. This is the version compatible with hapi v17<br/>
     [See release notes](https://github.com/hapijs/good/issues/575)<br/>
+  * environment variable<br/>
+    BASIC_APP must be set to the root directory of the basic project. <br/>
+    Loading TLS certs depends upon it.
 
 
 ### lesson1

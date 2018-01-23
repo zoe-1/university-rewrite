@@ -29,3 +29,5 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The complete list of contributors can be found at: https://github.com/zoe-1/university-rewrite/graphs/contributors
 
+CREDITS
+* `babel` `graphql` set up is mostly from https://github.com/graphql project (MIT license).  

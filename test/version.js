@@ -35,7 +35,7 @@ describe('/version', () => {
         const res = await server.inject(request);
 
         expect(res.result).to.equal('version 1.0.10');
-        await server.stop({ timeout: 4 });
+        await server.stop({ timeout: 0 });
     });
 
     it('./private success, valid authtoken', () => {
@@ -63,7 +63,7 @@ describe('/version', () => {
             const res = await server.inject(request);
 
             expect(res.result).to.equal('privateData');
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 
@@ -99,41 +99,37 @@ describe('/version', () => {
             expect(res.result.statusCode).to.equal(500);
             expect(res.result.error).to.equal('Internal Server Error');
 
-            await server.stop({ timeout: 4 });
+            await server.stop({ timeout: 0 });
         });
     });
 
-    it('denies non-admin user access to ./private route', () => {
+    it('denies non-admin user access to ./private route', async () => {
 
         const University = require('../lib');
 
+        const server = await University.init('test');
 
         const setTimeoutPromise = Util.promisify(setTimeout);
 
-        return setTimeoutPromise(150).then(async () => {
+        const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
 
-            const server = await University.init('test');
+        const authRes = await server.inject(authenticateRequest);
+
+        expect(authRes.result.result).to.equal('welcome');
+        expect(authRes.result.message).to.equal('successful authentication');
+        expect(authRes.result.token.length).to.equal(36);
+
+        const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + authRes.result.token } };
 
             expect(server).to.be.an.object();
 
             const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
 
-            const authRes = await server.inject(authenticateRequest);
+        expect(res.result.statusCode).to.equal(403);
+        expect(res.result.message).to.equal('Insufficient scope');
+        expect(res.result.error).to.equal('Forbidden');
 
-            expect(authRes.result.result).to.equal('welcome');
-            expect(authRes.result.message).to.equal('successful authentication');
-            expect(authRes.result.token.length).to.equal(36);
-
-            const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + authRes.result.token } };
-
-            const res = await server.inject(request);
-
-            expect(res.result.statusCode).to.equal(403);
-            expect(res.result.message).to.equal('Insufficient scope');
-            expect(res.result.error).to.equal('Forbidden');
-
-            await server.stop({ timeout: 4 });
-        });
+        await server.stop({ timeout: 0 });
     });
 });
 
