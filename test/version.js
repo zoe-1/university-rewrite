@@ -109,7 +109,7 @@ describe('/version', () => {
 
         const server = await University.init('test');
 
-        const setTimeoutPromise = Util.promisify(setTimeout);
+        expect(server).to.be.an.object();
 
         const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
 
@@ -121,9 +121,7 @@ describe('/version', () => {
 
         const request = { method: 'GET', url: '/private', headers: { authorization: 'Bearer ' + authRes.result.token } };
 
-            expect(server).to.be.an.object();
-
-            const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'barica', password: '12345678' } };
+        const res = await server.inject(request);
 
         expect(res.result.statusCode).to.equal(403);
         expect(res.result.message).to.equal('Insufficient scope');
