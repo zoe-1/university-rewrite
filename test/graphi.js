@@ -18,15 +18,34 @@ suite('/graphi', () => {
 
         const authenticateRequest = { method: 'POST', url: '/authenticate', payload: { username: 'foofoo', password: '12345678' } };
 
-        const authRes = await server.inject(authenticateRequest);
+        let authRes;
+        try {
 
-        expect(authRes.result.token.length).to.equal(36);
+            authRes = await server.inject(authenticateRequest);
+            expect(authRes.result.token.length).to.equal(36);
+
+        }
+        catch (error) {
+
+            console.log('WATCH ERROR: ' + error.message);
+        }
 
         const query = `{ getRepository (id:"1003") { name description } }`;
 
         const request = { method: 'POST', url: '/graphql', headers: { authorization: 'Bearer ' +  authRes.result.token }, payload: {  query } };
 
-        const res = await server.inject(request);
+        let res;
+        try {
+
+            res = await server.inject(request);
+
+        }
+        catch (error) {
+
+            console.log('WATCH ERROR: ' + error.message);
+        }
+
+        // console.log('WATCH ERROR: ' + Object.keys(res));
 
         expect(JSON.parse(res.payload)).to.equal({
             'data':
@@ -232,7 +251,7 @@ suite('/graphi', () => {
         });
     });
 
-    test('search projects > related_project > and related projects (friends of friends)', async () => {
+    test('search projects > related_projects > and related projects (friends of friends)', async () => {
 
         const University = require('../lib');
 
@@ -293,7 +312,7 @@ suite('/graphi', () => {
         await server.stop({ timeout: 4 });
     });
 
-    test('search projects > topics > and topics of related projects (friends of friends)', async () => {
+    test('search returns project and topics, plus, related projects, and their topics. (friends of friends)', async () => {
 
         const University = require('../lib');
 

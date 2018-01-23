@@ -17,4 +17,3 @@ coverage.*
 test/fixtures/awesomeLog.json
 test/fixtures/awesome_log
 log
-package-lock.json
